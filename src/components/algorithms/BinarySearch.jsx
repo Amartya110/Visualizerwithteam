@@ -1,116 +1,135 @@
 "use client";
-
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 export default function BinarySearch() {
-  const [target, setTarget] = useState(45);
-  const [steps, setSteps] = useState([]);
+  const [array] = useState([1, 3, 5, 7, 9, 11, 13, 15, 17, 19]);
+  const [target, setTarget] = useState(11);
+  const [left, setLeft] = useState(-1);
+  const [right, setRight] = useState(-1);
+  const [mid, setMid] = useState(-1);
+  const [found, setFound] = useState(-1);
   const [isRunning, setIsRunning] = useState(false);
-  const [result, setResult] = useState("");
+  const [actionLog, setActionLog] = useState([]);
 
-  const sortedArray = [
-    5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
-  ];
+  const logAction = (msg) => setActionLog(prev => [...prev, msg]);
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  const visualizeBinarySearch = useCallback(async () => {
+  const startSearch = async () => {
     setIsRunning(true);
-    setSteps([]);
-    setResult("");
+    setFound(-1);
+    setActionLog([]);
+    let l = 0;
+    let r = array.length - 1;
+    
+    logAction(`Starting Binary Search for target: ${target}`);
 
-    let left = 0;
-    let right = sortedArray.length - 1;
-    const newSteps = [];
+    while (l <= r) {
+      setLeft(l);
+      setRight(r);
+      logAction(`Search bounds updated: Left index = ${l}, Right index = ${r}`);
+      await delay(800);
+      
+      let m = Math.floor((l + r) / 2);
+      setMid(m);
+      logAction(`Calculated Midpoint index = ${m} (Value: ${array[m]})`);
+      await delay(800);
 
-    while (left <= right) {
-      const mid = Math.floor((left + right) / 2);
-
-      newSteps.push({
-        left,
-        right,
-        mid,
-        status: "searching",
-      });
-
-      setSteps([...newSteps]);
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
-      if (sortedArray[mid] === target) {
-        newSteps[newSteps.length - 1].status = "found";
-        setSteps([...newSteps]);
-        setResult(`Found ${target} at index ${mid}!`);
-        setIsRunning(false);
-        return;
-      } else if (sortedArray[mid] < target) {
-        left = mid + 1;
+      if (array[m] === target) {
+        setFound(m);
+        logAction(`Target ${target} found at index ${m}!`);
+        break;
+      } else if (array[m] < target) {
+        logAction(`Value ${array[m]} is less than target ${target}. Ignoring left half.`);
+        l = m + 1;
       } else {
-        right = mid - 1;
+        logAction(`Value ${array[m]} is greater than target ${target}. Ignoring right half.`);
+        r = m - 1;
       }
     }
+    
+    if (l > r && array[mid] !== target) {
+       setLeft(-1);
+       setRight(-1);
+       setMid(-1);
+       logAction(`Target ${target} not found in the array.`);
+    }
 
-    setResult(`Target ${target} not found in array`);
     setIsRunning(false);
-  }, [target, sortedArray]);
+  };
+
+  const reset = () => {
+    setLeft(-1); setRight(-1); setMid(-1); setFound(-1); setActionLog(["Reset."]);
+  };
 
   return (
     <div className="algo-container">
+      <div className="explanation" style={{ marginBottom: '20px' }}>
+        <h3 style={{ marginTop: 0 }}>Binary Search</h3>
+        <p><strong>Binary Search</strong> is an efficient algorithm for finding an item from a <strong>sorted list</strong> of items. It works by repeatedly dividing in half the portion of the list that could contain the item, until you've narrowed down the possible locations to just one. Time complexity: O(log N).</p>
+      </div>
+
       <div className="controls">
-        <div>
-          <label>Target: </label>
-          <input
-            type="number"
-            value={target}
-            onChange={(e) => setTarget(Number(e.target.value))}
-            disabled={isRunning}
-            min="0"
-            max="100"
-          />
-        </div>
-        <button onClick={visualizeBinarySearch} disabled={isRunning}>
-          {isRunning ? "Searching..." : "Start Search"}
+        <label>Target:</label>
+        <input
+          type="number"
+          value={target}
+          onChange={(e) => setTarget(parseInt(e.target.value))}
+          disabled={isRunning}
+        />
+        <button onClick={startSearch} disabled={isRunning}>
+          {isRunning ? "Searching..." : "Search"}
         </button>
-        <button
-          onClick={() => {
-            setSteps([]);
-            setResult("");
-          }}
-        >
-          Reset
-        </button>
+        <button onClick={reset} disabled={isRunning}>Reset</button>
       </div>
 
-      <div className="array-container">
-        <div className="array">
-          {sortedArray.map((num, idx) => {
-            const step = steps[steps.length - 1];
-            let className = "cell";
+      <div style={{ display: 'flex', gap: '20px', marginTop: '20px', flexWrap: 'wrap' }}>
+        <div className="glass-panel" style={{ flex: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '350px' }}>
+          <div className="array">
+            {array.map((val, idx) => {
+              let className = "cell";
+              if (found === idx) className += " found";
+              else if (mid === idx) className += " current";
+              else if (idx >= left && idx <= right) className += " range";
+              else if (left !== -1 && (idx < left || idx > right)) className += " inactive";
 
-            if (step) {
-              if (idx === step.mid && step.status === "found")
-                className += " found";
-              else if (idx === step.mid) className += " current";
-              else if (idx >= step.left && idx <= step.right)
-                className += " range";
-              else className += " visited";
-            }
-
-            return (
-              <div key={idx} className={className}>
-                {num}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {result && <div className="result">{result}</div>}
-
-      <div className="steps">
-        {steps.map((step, idx) => (
-          <div key={idx} className="step">
-            Step {idx + 1}: L={step.left}, R={step.right}, Mid={step.mid} (
-            {sortedArray[step.mid]}){step.status === "found" && " ✓"}
+              return (
+                <div key={idx} className={className} style={{ flexDirection: 'column' }}>
+                  <span style={{ fontSize: '11px', color: 'inherit', opacity: 0.6 }}>{idx}</span>
+                  {val}
+                </div>
+              );
+            })}
           </div>
-        ))}
+        </div>
+        <div className="steps" style={{ flex: 1, minWidth: '250px' }}>
+          <h4>Action Log</h4>
+          {actionLog.map((log, i) => <div key={i} className="step">{log}</div>)}
+          {actionLog.length === 0 && <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Enter a target and click Search.</div>}
+        </div>
+      </div>
+
+      <div className="glass-panel" style={{ marginTop: '20px' }}>
+        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
+        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
+{`function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+  
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    
+    if (arr[mid] === target) return mid;
+    
+    if (arr[mid] < target) {
+      left = mid + 1; // Ignore left half
+    } else {
+      right = mid - 1; // Ignore right half
+    }
+  }
+  
+  return -1; // Not found
+}`}
+        </pre>
       </div>
     </div>
   );

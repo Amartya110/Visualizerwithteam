@@ -10,6 +10,12 @@ import QuickSort from "@/components/algorithms/QuickSort";
 import BST from "@/components/algorithms/BST";
 import DFS from "@/components/algorithms/DFS";
 import BFS from "@/components/algorithms/BFS";
+import LinkedList from "@/components/algorithms/LinkedList";
+import Stack from "@/components/algorithms/Stack";
+import Queue from "@/components/algorithms/Queue";
+import Heap from "@/components/algorithms/Heap";
+import HashTable from "@/components/algorithms/HashTable";
+import Graph from "@/components/algorithms/Graph";
 import "./visualizer.css";
 
 export default function Home() {
@@ -77,6 +83,42 @@ export default function Home() {
         >
           BFS
         </button>
+        <button
+          className={`tab ${activeTab === "ll" ? "active" : ""}`}
+          onClick={() => setActiveTab("ll")}
+        >
+          Linked List
+        </button>
+        <button
+          className={`tab ${activeTab === "stack" ? "active" : ""}`}
+          onClick={() => setActiveTab("stack")}
+        >
+          Stack
+        </button>
+        <button
+          className={`tab ${activeTab === "queue" ? "active" : ""}`}
+          onClick={() => setActiveTab("queue")}
+        >
+          Queue
+        </button>
+        <button
+          className={`tab ${activeTab === "heap" ? "active" : ""}`}
+          onClick={() => setActiveTab("heap")}
+        >
+          Heap
+        </button>
+        <button
+          className={`tab ${activeTab === "hash" ? "active" : ""}`}
+          onClick={() => setActiveTab("hash")}
+        >
+          Hash Table
+        </button>
+        <button
+          className={`tab ${activeTab === "graph" ? "active" : ""}`}
+          onClick={() => setActiveTab("graph")}
+        >
+          Graph
+        </button>
       </div>
 
       <div className="content">
@@ -89,6 +131,12 @@ export default function Home() {
         {activeTab === "bst" && <BST />}
         {activeTab === "dfs" && <DFS />}
         {activeTab === "bfs" && <BFS />}
+        {activeTab === "ll" && <LinkedList />}
+        {activeTab === "stack" && <Stack />}
+        {activeTab === "queue" && <Queue />}
+        {activeTab === "heap" && <Heap />}
+        {activeTab === "hash" && <HashTable />}
+        {activeTab === "graph" && <Graph />}
       </div>
     </div>
   );
