@@ -1,7 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function BFS() {
+export default function BFS({ speed = 1 }) {
   const [visited, setVisited] = useState([]);
   const [active, setActive] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -33,7 +34,7 @@ export default function BFS() {
       
       setActive(node.val);
       logAction(`Dequeued node ${node.val}. Processing...`);
-      await new Promise((res) => setTimeout(res, 800));
+      await new Promise((res) => setTimeout(res, 800 / speed));
       
       visitedNodes.push(node.val);
       setVisited([...visitedNodes]);
@@ -101,10 +102,42 @@ export default function BFS() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function bfs(root) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`void bfs(TreeNode* root) {
+    if (root == nullptr) return;
+    
+    queue<TreeNode*> q;
+    q.push(root);
+    
+    while (!q.empty()) {
+        TreeNode* node = q.front();
+        q.pop();
+        
+        cout << node->val << " ";
+        
+        if (node->left) q.push(node->left);
+        if (node->right) q.push(node->right);
+    }
+}`}
+          python={`from collections import deque
+
+def bfs(root):
+    if not root:
+        return
+        
+    queue = deque([root])
+    
+    while queue:
+        node = queue.popleft()
+        print(node.val)
+        
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)`}
+          javascript={`function bfs(root) {
   if (!root) return;
   const queue = [root];
 
@@ -116,7 +149,7 @@ export default function BFS() {
     if (node.right) queue.push(node.right);
   }
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

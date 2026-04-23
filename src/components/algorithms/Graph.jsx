@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function Graph() {
+export default function Graph({ speed = 1 }) {
   const [nodes, setNodes] = useState([
     { id: 1, x: 120, y: 60 },
     { id: 2, x: 280, y: 60 },
@@ -110,10 +111,42 @@ export default function Graph() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`class Graph {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`class Graph {
+    unordered_map<int, vector<int>> adjList;
+public:
+    void addVertex(int vertex) {
+        if (adjList.find(vertex) == adjList.end()) {
+            adjList[vertex] = vector<int>();
+        }
+    }
+    
+    void addEdge(int v1, int v2) {
+        adjList[v1].push_back(v2);
+        adjList[v2].push_back(v1); // Undirected
+    }
+    
+    vector<int> getNeighbors(int vertex) {
+        return adjList[vertex];
+    }
+};`}
+          python={`class Graph:
+    def __init__(self):
+        self.adj_list = {}
+        
+    def add_vertex(self, vertex):
+        if vertex not in self.adj_list:
+            self.adj_list[vertex] = []
+            
+    def add_edge(self, v1, v2):
+        self.adj_list[v1].append(v2)
+        self.adj_list[v2].append(v1) # Undirected
+        
+    def get_neighbors(self, vertex):
+        return self.adj_list.get(vertex, [])`}
+          javascript={`class Graph {
   constructor() {
     this.adjacencyList = {};
   }
@@ -134,7 +167,7 @@ export default function Graph() {
     return this.adjacencyList[vertex] || [];
   }
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

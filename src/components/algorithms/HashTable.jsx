@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function HashTable() {
+export default function HashTable({ speed = 1 }) {
   const [table, setTable] = useState(Array(5).fill([]));
   const [key, setKey] = useState("");
   const [value, setValue] = useState("");
@@ -78,10 +79,51 @@ export default function HashTable() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`class HashTable {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`class HashTable {
+    vector<list<pair<string, string>>> table;
+    
+    int hash(string key) {
+        int sum = 0;
+        for (char c : key) sum += c;
+        return sum % table.size();
+    }
+public:
+    HashTable(int size = 5) {
+        table.resize(size);
+    }
+    
+    void put(string key, string value) {
+        int index = hash(key);
+        for (auto& item : table[index]) {
+            if (item.first == key) {
+                item.second = value;
+                return;
+            }
+        }
+        table[index].push_back({key, value});
+    }
+};`}
+          python={`class HashTable:
+    def __init__(self, size=5):
+        self.table = [[] for _ in range(size)]
+        
+    def _hash(self, key):
+        return sum(ord(c) for c in key) % len(self.table)
+        
+    def put(self, key, value):
+        index = self._hash(key)
+        bucket = self.table[index]
+        
+        for i, (k, v) in enumerate(bucket):
+            if k == key:
+                bucket[i] = (key, value)
+                return
+                
+        bucket.append((key, value))`}
+          javascript={`class HashTable {
   constructor(size = 5) {
     this.table = new Array(size).fill(null).map(() => []);
   }
@@ -108,7 +150,7 @@ export default function HashTable() {
     }
   }
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

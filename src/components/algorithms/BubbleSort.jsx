@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function BubbleSort() {
+export default function BubbleSort({ speed = 1 }) {
   const initialArray = [64, 34, 25, 12, 22, 11, 90];
   const [array, setArray] = useState([...initialArray]);
   const [activeIndices, setActiveIndices] = useState([]);
@@ -10,7 +11,7 @@ export default function BubbleSort() {
   const [actionLog, setActionLog] = useState([]);
 
   const logAction = (msg) => setActionLog(prev => [...prev, msg].slice(-8));
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms / speed));
 
   const sort = async () => {
     setIsRunning(true);
@@ -91,10 +92,27 @@ export default function BubbleSort() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function bubbleSort(arr) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`void bubbleSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+}`}
+          python={`def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n - 1):
+        for j in range(n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr`}
+          javascript={`function bubbleSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
@@ -108,7 +126,7 @@ export default function BubbleSort() {
   }
   return arr;
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

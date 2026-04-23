@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function Stack() {
+export default function Stack({ speed = 1 }) {
   const [stack, setStack] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [actionLog, setActionLog] = useState([]);
@@ -64,10 +65,48 @@ export default function Stack() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`class Stack {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`class Stack {
+    vector<int> items;
+public:
+    void push(int element) {
+        items.push_back(element);
+    }
+    
+    void pop() {
+        if (!isEmpty()) {
+            items.pop_back();
+        }
+    }
+    
+    int peek() {
+        return items.back();
+    }
+    
+    bool isEmpty() {
+        return items.empty();
+    }
+};`}
+          python={`class Stack:
+    def __init__(self):
+        self.items = []
+        
+    def push(self, element):
+        self.items.append(element)
+        
+    def pop(self):
+        if not self.is_empty():
+            return self.items.pop()
+            
+    def peek(self):
+        if not self.is_empty():
+            return self.items[-1]
+            
+    def is_empty(self):
+        return len(self.items) == 0`}
+          javascript={`class Stack {
   constructor() {
     this.items = [];
   }
@@ -89,7 +128,7 @@ export default function Stack() {
     return this.items.length === 0;
   }
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

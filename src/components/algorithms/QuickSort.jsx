@@ -1,7 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function QuickSort() {
+export default function QuickSort({ speed = 1 }) {
   const defaultArray = [64, 34, 25, 12, 22, 11, 90, 45, 78, 3];
   const [array, setArray] = useState([...defaultArray]);
   const [isRunning, setIsRunning] = useState(false);
@@ -15,6 +16,7 @@ export default function QuickSort() {
   const visualizeQuickSort = useCallback(async () => {
     setIsRunning(true);
     setActionLog(["Starting Quick Sort..."]);
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms / speed));
     let arr = [...array];
 
     async function partition(arr, low, high) {
@@ -24,11 +26,11 @@ export default function QuickSort() {
       let i = low - 1;
       for (let j = low; j <= high - 1; j++) {
         setCurrentIndices([j, i + 1]);
-        await new Promise((res) => setTimeout(res, 200));
+        await delay(200);
         if (arr[j] < pivot) {
           i++;
           setSwappedIndices([i, j]);
-          await new Promise((res) => setTimeout(res, 200));
+          await delay(200);
           let temp = arr[i];
           arr[i] = arr[j];
           arr[j] = temp;
@@ -37,7 +39,7 @@ export default function QuickSort() {
         }
       }
       setSwappedIndices([i + 1, high]);
-      await new Promise((res) => setTimeout(res, 300));
+      await delay(300);
       let temp = arr[i + 1];
       arr[i + 1] = arr[high];
       arr[high] = temp;
@@ -113,10 +115,48 @@ export default function QuickSort() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function quickSort(arr, low = 0, high = arr.length - 1) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];
+    int i = (low - 1);
+  
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return (i + 1);
+}
+
+void quickSort(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}`}
+          python={`def partition(arr, low, high):
+    pivot = arr[high]
+    i = low - 1
+    
+    for j in range(low, high):
+        if arr[j] < pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]
+            
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return i + 1
+
+def quick_sort(arr, low, high):
+    if low < high:
+        pi = partition(arr, low, high)
+        quick_sort(arr, low, pi - 1)
+        quick_sort(arr, pi + 1, high)`}
+          javascript={`function quickSort(arr, low = 0, high = arr.length - 1) {
   if (low < high) {
     let pi = partition(arr, low, high);
     quickSort(arr, low, pi - 1);
@@ -139,7 +179,7 @@ function partition(arr, low, high) {
   [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]]; // Swap
   return i + 1;
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function Heap() {
+export default function Heap({ speed = 1 }) {
   const [heap, setHeap] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [active, setActive] = useState(null);
@@ -22,7 +23,7 @@ export default function Heap() {
     let curr = newHeap.length - 1;
     while (curr > 0) {
       setActive(curr);
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 600 / speed));
       let parent = Math.floor((curr - 1) / 2);
       if (newHeap[curr] > newHeap[parent]) {
         logAction(`Swapping ${newHeap[curr]} with parent ${newHeap[parent]}`);
@@ -115,10 +116,44 @@ export default function Heap() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`class MaxHeap {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`class MaxHeap {
+    vector<int> heap;
+    
+    void bubbleUp(int index) {
+        while (index > 0) {
+            int parent = (index - 1) / 2;
+            if (heap[parent] >= heap[index]) break;
+            
+            swap(heap[parent], heap[index]);
+            index = parent;
+        }
+    }
+public:
+    void insert(int val) {
+        heap.push_back(val);
+        bubbleUp(heap.size() - 1);
+    }
+};`}
+          python={`class MaxHeap:
+    def __init__(self):
+        self.heap = []
+        
+    def insert(self, val):
+        self.heap.append(val)
+        self.bubble_up(len(self.heap) - 1)
+        
+    def bubble_up(self, index):
+        while index > 0:
+            parent = (index - 1) // 2
+            if self.heap[parent] >= self.heap[index]:
+                break
+                
+            self.heap[parent], self.heap[index] = self.heap[index], self.heap[parent]
+            index = parent`}
+          javascript={`class MaxHeap {
   constructor() {
     this.heap = [];
   }
@@ -141,7 +176,7 @@ export default function Heap() {
     }
   }
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

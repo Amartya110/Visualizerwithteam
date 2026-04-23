@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function BinarySearch() {
+export default function BinarySearch({ speed = 1 }) {
   const [array] = useState([1, 3, 5, 7, 9, 11, 13, 15, 17, 19]);
   const [target, setTarget] = useState(11);
   const [left, setLeft] = useState(-1);
@@ -12,7 +13,7 @@ export default function BinarySearch() {
   const [actionLog, setActionLog] = useState([]);
 
   const logAction = (msg) => setActionLog(prev => [...prev, msg]);
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms / speed));
 
   const startSearch = async () => {
     setIsRunning(true);
@@ -108,10 +109,41 @@ export default function BinarySearch() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function binarySearch(arr, target) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`int binarySearch(vector<int>& arr, int target) {
+    int left = 0;
+    int right = arr.size() - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if (arr[mid] == target) return mid;
+        
+        if (arr[mid] < target)
+            left = mid + 1; // Ignore left half
+        else
+            right = mid - 1; // Ignore right half
+    }
+    
+    return -1; // Not found
+}`}
+          python={`def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1 # Ignore left half
+        else:
+            right = mid - 1 # Ignore right half
+            
+    return -1 # Not found`}
+          javascript={`function binarySearch(arr, target) {
   let left = 0;
   let right = arr.length - 1;
   
@@ -129,7 +161,7 @@ export default function BinarySearch() {
   
   return -1; // Not found
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function BST() {
+export default function BST({ speed = 1 }) {
   const [visited, setVisited] = useState([]);
   const [active, setActive] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -16,7 +17,7 @@ export default function BST() {
     right: { val: 10, left: null, right: { val: 14, left: { val: 13, left: null, right: null }, right: null } },
   };
 
-  const delay = (ms) => new Promise(res => setTimeout(res, ms));
+  const delay = (ms) => new Promise(res => setTimeout(res, ms / speed));
 
   const visualizeSearch = useCallback(async () => {
     setIsRunning(true);
@@ -108,10 +109,37 @@ export default function BST() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function searchBST(root, target) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`bool searchBST(TreeNode* root, int target) {
+    TreeNode* current = root;
+    
+    while (current != nullptr) {
+        if (current->val == target) return true;
+        
+        if (target < current->val)
+            current = current->left;
+        else
+            current = current->right;
+    }
+    
+    return false;
+}`}
+          python={`def search_bst(root, target):
+    current = root
+    
+    while current is not None:
+        if current.val == target:
+            return True
+            
+        if target < current.val:
+            current = current.left
+        else:
+            current = current.right
+            
+    return False`}
+          javascript={`function searchBST(root, target) {
   let current = root;
   
   while (current !== null) {
@@ -128,7 +156,7 @@ export default function BST() {
   
   return false; // Target not found
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

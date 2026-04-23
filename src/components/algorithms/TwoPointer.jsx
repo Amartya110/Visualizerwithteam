@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function TwoPointer() {
+export default function TwoPointer({ speed = 1 }) {
   const [array] = useState([2, 7, 11, 15, 20, 25]);
   const [target, setTarget] = useState(18);
   const [left, setLeft] = useState(0);
@@ -11,7 +12,7 @@ export default function TwoPointer() {
   const [actionLog, setActionLog] = useState([]);
 
   const logAction = (msg) => setActionLog(prev => [...prev, msg]);
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms / speed));
 
   const startSearch = async () => {
     setIsRunning(true);
@@ -102,10 +103,40 @@ export default function TwoPointer() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function twoSum(sortedArr, target) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`vector<int> twoSum(vector<int>& sortedArr, int target) {
+    int left = 0;
+    int right = sortedArr.size() - 1;
+    
+    while (left < right) {
+        int sum = sortedArr[left] + sortedArr[right];
+        
+        if (sum == target) return {left, right};
+        
+        if (sum < target) left++;
+        else right--;
+    }
+    
+    return {};
+}`}
+          python={`def two_sum(sorted_arr, target):
+    left, right = 0, len(sorted_arr) - 1
+    
+    while left < right:
+        current_sum = sorted_arr[left] + sorted_arr[right]
+        
+        if current_sum == target:
+            return [left, right]
+            
+        if current_sum < target:
+            left += 1
+        else:
+            right -= 1
+            
+    return None`}
+          javascript={`function twoSum(sortedArr, target) {
   let left = 0;
   let right = sortedArr.length - 1;
   
@@ -125,7 +156,7 @@ export default function TwoPointer() {
   
   return null; // No pair found
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

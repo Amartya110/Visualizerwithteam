@@ -1,7 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function MergeSort() {
+export default function MergeSort({ speed = 1 }) {
   const defaultArray = [64, 34, 25, 12, 22, 11, 90, 45, 78, 3];
   const [array, setArray] = useState([...defaultArray]);
   const [isRunning, setIsRunning] = useState(false);
@@ -13,6 +14,7 @@ export default function MergeSort() {
   const visualizeMergeSort = useCallback(async () => {
     setIsRunning(true);
     setActionLog(["Starting Merge Sort..."]);
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms / speed));
     let arr = [...array];
 
     async function merge(arr, l, m, r) {
@@ -26,7 +28,7 @@ export default function MergeSort() {
       let i = 0, j = 0, k = l;
       while (i < n1 && j < n2) {
         setCurrentIndices([l + i, m + 1 + j]);
-        await new Promise((res) => setTimeout(res, 200));
+        await delay(200);
         if (L[i] <= R[j]) {
           arr[k] = L[i];
           i++;
@@ -36,17 +38,17 @@ export default function MergeSort() {
         }
         setArray([...arr]);
         k++;
-        await new Promise((res) => setTimeout(res, 100));
+        await delay(100);
       }
       while (i < n1) {
         arr[k] = L[i]; i++; k++;
         setArray([...arr]);
-        await new Promise((res) => setTimeout(res, 50));
+        await delay(50);
       }
       while (j < n2) {
         arr[k] = R[j]; j++; k++;
         setArray([...arr]);
-        await new Promise((res) => setTimeout(res, 50));
+        await delay(50);
       }
       logAction(`Merged into: ${arr.slice(l, r+1).join(", ")}`);
     }
@@ -110,10 +112,61 @@ export default function MergeSort() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function mergeSort(arr) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`void merge(vector<int>& arr, int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    vector<int> L(n1), R(n2);
+    
+    for (int i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+    
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+    
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(vector<int>& arr, int l, int r) {
+    if (l >= r) return;
+    int m = l + (r - l) / 2;
+    mergeSort(arr, l, m);
+    mergeSort(arr, m + 1, r);
+    merge(arr, l, m, r);
+}`}
+          python={`def merge_sort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        L = arr[:mid]
+        R = arr[mid:]
+
+        merge_sort(L)
+        merge_sort(R)
+
+        i = j = k = 0
+        while i < len(L) and j < len(R):
+            if L[i] < R[j]:
+                arr[k] = L[i]
+                i += 1
+            else:
+                arr[k] = R[j]
+                j += 1
+            k += 1
+
+        while i < len(L):
+            arr[k] = L[i]
+            i += 1; k += 1
+
+        while j < len(R):
+            arr[k] = R[j]
+            j += 1; k += 1`}
+          javascript={`function mergeSort(arr) {
   if (arr.length <= 1) return arr;
   
   const mid = Math.floor(arr.length / 2);
@@ -136,7 +189,7 @@ function merge(left, right) {
   
   return result.concat(left.slice(i)).concat(right.slice(j));
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

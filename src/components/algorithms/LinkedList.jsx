@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function LinkedList() {
+export default function LinkedList({ speed = 1 }) {
   const [list, setList] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [actionLog, setActionLog] = useState([]);
@@ -68,10 +69,76 @@ export default function LinkedList() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`class Node {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`struct Node {
+    int val;
+    Node* next;
+    Node(int x) : val(x), next(nullptr) {}
+};
+
+class LinkedList {
+    Node* head;
+public:
+    LinkedList() { head = nullptr; }
+    
+    void append(int val) {
+        if (!head) {
+            head = new Node(val);
+            return;
+        }
+        Node* curr = head;
+        while (curr->next) {
+            curr = curr->next;
+        }
+        curr->next = new Node(val);
+    }
+    
+    void pop() {
+        if (!head) return;
+        if (!head->next) {
+            delete head;
+            head = nullptr;
+            return;
+        }
+        Node* curr = head;
+        while (curr->next->next) {
+            curr = curr->next;
+        }
+        delete curr->next;
+        curr->next = nullptr;
+    }
+};`}
+          python={`class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        
+    def append(self, val):
+        if not self.head:
+            self.head = Node(val)
+            return
+        curr = self.head
+        while curr.next:
+            curr = curr.next
+        curr.next = Node(val)
+        
+    def pop(self):
+        if not self.head:
+            return
+        if not self.head.next:
+            self.head = None
+            return
+        curr = self.head
+        while curr.next.next:
+            curr = curr.next
+        curr.next = None`}
+          javascript={`class Node {
   constructor(val) {
     this.val = val;
     this.next = null;
@@ -108,7 +175,7 @@ class LinkedList {
     curr.next = null;
   }
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

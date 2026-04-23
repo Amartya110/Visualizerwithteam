@@ -1,7 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function DynamicProgramming() {
+export default function DynamicProgramming({ speed = 1 }) {
   const [n, setN] = useState(8);
   const [dp, setDp] = useState([]);
   const [isRunning, setIsRunning] = useState(false);
@@ -34,7 +35,7 @@ export default function DynamicProgramming() {
     }
 
     setDp([...fibArray]);
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600 / speed));
 
     // Fill the rest
     for (let i = 2; i <= n; i++) {
@@ -44,13 +45,13 @@ export default function DynamicProgramming() {
       fibArray[i].calculated = true;
       logAction(`Calculating F(${i}): F(${i-1}) + F(${i-2}) = ${v1} + ${v2} = ${fibArray[i].value}`);
       setDp([...fibArray]);
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      await new Promise((resolve) => setTimeout(resolve, 600 / speed));
     }
 
     setResult(fibArray[n].value);
     setIsRunning(false);
     logAction(`Calculation Complete! F(${n}) = ${fibArray[n].value}`);
-  }, [n]);
+  }, [n, speed]);
 
   return (
     <div className="algo-container">
@@ -118,10 +119,35 @@ export default function DynamicProgramming() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function fibonacci(n) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`int fibonacci(int n) {
+    if (n <= 1) return n;
+    
+    vector<int> dp(n + 1);
+    dp[0] = 0;
+    dp[1] = 1;
+    
+    for (int i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    
+    return dp[n];
+}`}
+          python={`def fibonacci(n):
+    if n <= 1:
+        return n
+        
+    dp = [0] * (n + 1)
+    dp[0] = 0
+    dp[1] = 1
+    
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+        
+    return dp[n]`}
+          javascript={`function fibonacci(n) {
   if (n <= 1) return n;
   
   let dp = new Array(n + 1);
@@ -134,7 +160,7 @@ export default function DynamicProgramming() {
   
   return dp[n];
 }`}
-        </pre>
+        />
       </div>
     </div>
   );

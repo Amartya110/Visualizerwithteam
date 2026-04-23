@@ -1,7 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
+import CodeDisplay from "@/components/CodeDisplay";
 
-export default function DFS() {
+export default function DFS({ speed = 1 }) {
   const [visited, setVisited] = useState([]);
   const [active, setActive] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -15,7 +16,7 @@ export default function DFS() {
     right: { val: 3, left: { val: 6, left: null, right: null }, right: { val: 7, left: null, right: null } },
   };
 
-  const delay = (ms) => new Promise(res => setTimeout(res, ms));
+  const delay = (ms) => new Promise(res => setTimeout(res, ms / speed));
 
   const visualizeDFS = useCallback(async () => {
     setIsRunning(true);
@@ -98,10 +99,28 @@ export default function DFS() {
         </div>
       </div>
 
-      <div className="glass-panel" style={{ marginTop: '20px' }}>
-        <h4 style={{ margin: '0 0 15px 0', color: 'var(--accent-primary)', fontSize: '18px' }}>JavaScript Implementation Example</h4>
-        <pre style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', overflowX: 'auto', color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
-{`function dfs(node) {
+      <div className="glass-panel" style={{ marginTop: '20px', padding: 0, overflow: 'hidden' }}>
+        <h4 style={{ margin: '20px 0 15px 20px', color: 'var(--accent-primary)', fontSize: '18px' }}>Implementation Example</h4>
+        <CodeDisplay 
+          cpp={`void dfs(TreeNode* node) {
+    if (node == nullptr) return;
+    
+    // Pre-order traversal
+    cout << node->val << " ";
+    
+    dfs(node->left);
+    dfs(node->right);
+}`}
+          python={`def dfs(node):
+    if not node:
+        return
+        
+    # Pre-order traversal
+    print(node.val)
+    
+    dfs(node.left)
+    dfs(node.right)`}
+          javascript={`function dfs(node) {
   if (!node) return;
   
   // Pre-order traversal
@@ -110,7 +129,7 @@ export default function DFS() {
   dfs(node.left);
   dfs(node.right);
 }`}
-        </pre>
+        />
       </div>
     </div>
   );
